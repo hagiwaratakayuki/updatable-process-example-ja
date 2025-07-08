@@ -1,0 +1,1 @@
+ENUMはVARCHAR(255)に変更して
