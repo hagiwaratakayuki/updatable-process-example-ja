@@ -1,0 +1,229 @@
+### Admins
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Admin",
+  "description": "システムにログインし、イベント（部屋）を作成・管理するユーザー",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "管理者の一意なID",
+      "readOnly": true
+    },
+    "username": {
+      "type": "string",
+      "description": "ログインに使用するユーザー名",
+      "maxLength": 255
+    },
+    "passwordHash": {
+      "type": "string",
+      "description": "ハッシュ化されたパスワード",
+      "maxLength": 255,
+      "writeOnly": true
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "アカウント作成日時",
+      "readOnly": true
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "最終更新日時",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "username",
+    "passwordHash"
+  ]
+}
+```
+
+-----
+
+### Rooms
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Room",
+  "description": "各オンラインイベントのコンテナとなる「部屋」",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "部屋の一意なID",
+      "readOnly": true
+    },
+    "adminId": {
+      "type": "integer",
+      "description": "この部屋を作成した管理者のID"
+    },
+    "roomSlug": {
+      "type": "string",
+      "description": "URL共有用の文字列",
+      "maxLength": 255
+    },
+    "title": {
+      "type": "string",
+      "description": "イベントのタイトル",
+      "maxLength": 255
+    },
+    "status": {
+      "type": "string",
+      "description": "部屋の状態",
+      "enum": [
+        "active",
+        "archived"
+      ]
+    },
+    "showRespondentNames": {
+      "type": "boolean",
+      "description": "回答者名の表示/非表示設定",
+      "default": false
+    },
+    "currentPollId": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "現在進行中のアンケートID"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "部屋の作成日時",
+      "readOnly": true
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "最終更新日時",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "adminId",
+    "roomSlug",
+    "title",
+    "status"
+  ]
+}
+```
+
+-----
+
+### Polls
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Poll",
+  "description": "部屋の中で作成される個々のアンケート（質問）",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "アンケートの一意なID",
+      "readOnly": true
+    },
+    "roomId": {
+      "type": "integer",
+      "description": "このアンケートが属する部屋のID"
+    },
+    "question": {
+      "type": "string",
+      "description": "アンケートの質問文"
+    },
+    "type": {
+      "type": "string",
+      "description": "アンケートの種類",
+      "enum": [
+        "choice",
+        "scale",
+        "text"
+      ]
+    },
+    "allowMultipleAnswers": {
+      "type": "boolean",
+      "description": "複数回答を許可するかどうか",
+      "default": false
+    },
+    "displayOrder": {
+      "type": "integer",
+      "description": "部屋の中でのアンケートの表示順",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "description": "アンケートの進行状態",
+      "enum": [
+        "waiting",
+        "active",
+        "closed"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "アンケート作成日時",
+      "readOnly": true
+    }
+  },
+  "required": [
+    "roomId",
+    "question",
+    "type",
+    "status"
+  ]
+}
+```
+
+-----
+
+### PollOptions
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PollOption",
+  "description": "選択式・段階式アンケートの「選択肢」や「段階ラベル」",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "選択肢の一意なID",
+      "readOnly": true
+    },
+    "pollId": {
+      "type": "integer",
+      "description": "この選択肢が属するアンケートのID"
+    },
+    "label": {
+      "type": "string",
+      "description": "選択肢のテキスト、または段階式のラベル",
+      "maxLength": 255
+    },
+    "scaleValue": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "段階式の場合の段階値（1〜10）"
+    },
+    "displayOrder": {
+      "type": "integer",
+      "description": "選択肢の表示順",
+      "default": 0
+    }
+  },
+  "required": [
+    "pollId",
+    "label"
+  ]
+}
+```
